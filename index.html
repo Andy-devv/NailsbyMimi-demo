@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nails by Mimi | Aurora, Colorado</title>
+<meta name="description" content="Licensed Nail Technician in Aurora, Colorado. Book appointments online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</style>
+</style>
+</head>
+<body>
+ 
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="nav-logo" onclick="handleLogoClick()">
+    <img id="nav-logo-img" alt="Nails by Mimi">
+    <span>Nails by Mimi</span>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-menu" id="nav-menu">
+    <ul class="nav-links" id="nav-links-list">
+      <!-- Rendered by JS based on auth state -->
+    </ul>
+  </div>
+</nav>
+ 
+<main>
+  <div id="page-home"       class="page"></div>
+  <div id="page-clientdash" class="page"></div>
+  <div id="page-book"       class="page"></div>
+  <div id="page-myappts"    class="page"></div>
+  <div id="page-dashboard"  class="page"></div>
+  <div id="page-auth"       class="page"></div>
+</main>
+ 
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+ 
+<script>
+const LOGO_SRC = "data:image/png;base64,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";
+ 
+ 
+/* ═══════════════════════════════════════════════
+   DATA & STATE
+═══════════════════════════════════════════════ */
+const SERVICES = [
+  {id:'manicure',  name:'Classic Manicure',   duration:45,  price:35,  icon:'💅', desc:'Shape, cuticle care & polish',            color:'appt-manicure'},
+  {id:'pedicure',  name:'Classic Pedicure',   duration:60,  price:50,  icon:'🦶', desc:'Soak, exfoliate, shape & polish',         color:'appt-pedicure'},
+  {id:'gel',       name:'Gel Manicure',        duration:60,  price:55,  icon:'✨', desc:'Long-lasting gel color & shine',          color:'appt-gel'},
+  {id:'gel-pedi',  name:'Gel Pedicure',        duration:75,  price:65,  icon:'💎', desc:'Gel finish on beautifully prepped feet',  color:'appt-pedicure'},
+  {id:'acrylic',   name:'Full Set Acrylic',    duration:90,  price:75,  icon:'💍', desc:'Full set, length & shape of choice',      color:'appt-acrylic'},
+  {id:'acrylic-fill',name:'Acrylic Fill',      duration:60,  price:50,  icon:'🔧', desc:'Fill in grown-out acrylics',              color:'appt-acrylic'},
+  {id:'nail-art',  name:'Nail Art Add-on',     duration:30,  price:20,  icon:'🎨', desc:'Custom designs & embellishments',         color:'appt-nail-art'},
+  {id:'mani-pedi', name:'Mani + Pedi Combo',   duration:105, price:80,  icon:'🌸', desc:'Classic mani & pedi together',            color:'appt-manicure'},
+  {id:'wax',       name:'Waxing Service',       duration:30,  price:25,  icon:'🌿', desc:'Eyebrow, lip, or chin waxing',            color:'appt-wax'},
+];
+ 
+const DEFAULT_SCHEDULE = {
+  0:{open:false,start:'10:00',end:'18:00'},
+  1:{open:true, start:'09:00',end:'18:00'},
+  2:{open:true, start:'09:00',end:'18:00'},
+  3:{open:true, start:'09:00',end:'18:00'},
+  4:{open:true, start:'09:00',end:'18:00'},
+  5:{open:true, start:'09:00',end:'19:00'},
+  6:{open:true, start:'10:00',end:'17:00'},
+};
+ 
+const OWNER_EMAIL = 'mimi@nailsbymimi.com';
+const OWNER_PASS  = 'mimi2024';
+ 
+const S = {
+  page: 'home',
+  user: null,
+  appointments: [],
+  blockedTimes:  [],
+  schedule:      {},
+  users:         [],
+};
+ 
+function save() {
+  localStorage.setItem('nbm_appts',    JSON.stringify(S.appointments));
+  localStorage.setItem('nbm_blocked',  JSON.stringify(S.blockedTimes));
+  localStorage.setItem('nbm_schedule', JSON.stringify(S.schedule));
+  localStorage.setItem('nbm_users',    JSON.stringify(S.users));
+}
+function load() {
+  try {
+    S.appointments = JSON.parse(localStorage.getItem('nbm_appts')    || '[]');
+    S.blockedTimes  = JSON.parse(localStorage.getItem('nbm_blocked')  || '[]');
+    S.schedule      = JSON.parse(localStorage.getItem('nbm_schedule') || 'null') || {...DEFAULT_SCHEDULE};
+    S.users         = JSON.parse(localStorage.getItem('nbm_users')    || '[]');
+  } catch(e) { S.schedule = {...DEFAULT_SCHEDULE}; }
+}
+function seedDemo() {
+  if (S.appointments.length) return;
+  const today = new Date();
+  const base = (d,h,m=0)=>{ const dt=new Date(today); dt.setDate(today.getDate()+d); dt.setHours(h,m,0,0); return dt.toISOString(); };
+  S.appointments = [
+    {id:'d1',clientName:'Sofia R.',    clientEmail:'sofia@demo.com', serviceId:'gel',       start:base(0,10,0),  end:base(0,11,0),  status:'confirmed',notes:''},
+    {id:'d2',clientName:'Jasmine T.',  clientEmail:'jas@demo.com',   serviceId:'pedicure',  start:base(0,11,30), end:base(0,12,30), status:'confirmed',notes:''},
+    {id:'d3',clientName:'Maria L.',    clientEmail:'maria@demo.com', serviceId:'manicure',  start:base(1,9,0),   end:base(1,9,45),  status:'confirmed',notes:''},
+    {id:'d4',clientName:'Destiny K.',  clientEmail:'dest@demo.com',  serviceId:'acrylic',   start:base(1,13,0),  end:base(1,14,30), status:'confirmed',notes:''},
+    {id:'d5',clientName:'Priya N.',    clientEmail:'priya@demo.com', serviceId:'mani-pedi', start:base(2,10,0),  end:base(2,11,45), status:'confirmed',notes:''},
+    {id:'d6',clientName:'Lauren B.',   clientEmail:'lauren@demo.com',serviceId:'gel',       start:base(3,14,0),  end:base(3,15,0),  status:'confirmed',notes:''},
+  ];
+  save();
+}
+ 
+/* ─── Helpers ─── */
+const genId = () => Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const getSvc = id => SERVICES.find(s=>s.id===id);
+const fmtTime = iso => { const d=new Date(iso),h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM'; return `${h%12||12}:${String(m).padStart(2,'0')} ${ap}`; };
+const fmtDate = iso => new Date(iso).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+const fmtDateLong = iso => new Date(iso).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+const sameDay = (a,b) => { const da=new Date(a),db=new Date(b); return da.getFullYear()===db.getFullYear()&&da.getMonth()===db.getMonth()&&da.getDate()===db.getDate(); };
+function getWeekDates(ref) {
+  const d=new Date(ref),day=d.getDay(),mon=new Date(d);
+  mon.setDate(d.getDate()-day+(day===0?-6:1));
+  return Array.from({length:7},(_,i)=>{ const nd=new Date(mon); nd.setDate(mon.getDate()+i); return nd; });
+}
+function isAvailable(date, timeStr, serviceId) {
+  const svc=getSvc(serviceId); if(!svc) return false;
+  const [h,m]=timeStr.split(':').map(Number);
+  const start=new Date(date); start.setHours(h,m,0,0);
+  const end=new Date(start.getTime()+svc.duration*60000);
+  const dow=start.getDay(), sc=S.schedule[dow]||DEFAULT_SCHEDULE[dow];
+  if(!sc.open) return false;
+  const [oh,om]=sc.start.split(':').map(Number),[ch,cm]=sc.end.split(':').map(Number);
+  const startMin=h*60+m, endMin=startMin+svc.duration;
+  if(startMin<oh*60+om||endMin>ch*60+cm) return false;
+  for(const a of S.appointments){ const as=new Date(a.start),ae=new Date(a.end); if(start<ae&&end>as) return false; }
+  for(const b of S.blockedTimes){ const bs=new Date(b.start),be=new Date(b.end); if(start<be&&end>bs) return false; }
+  return true;
+}
+ 
+/* ═══════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════ */
+function navigateTo(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
+  S.page = page;
+  renderNav();
+  if(page==='home')       renderHome();
+  if(page==='clientdash') renderClientDash();
+  if(page==='book')       renderBooking();
+  if(page==='myappts')    renderMyAppts();
+  if(page==='dashboard')  renderOwnerDash();
+  if(page==='auth')       renderAuth();
+  document.getElementById('nav-menu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+ 
+function handleLogoClick() {
+  if(!S.user) navigateTo('home');
+  else if(S.user.isOwner) navigateTo('dashboard');
+  else navigateTo('clientdash');
+}
+ 
+function renderNav() {
+  const u = S.user;
+  const p = S.page;
+  let links = '';
+ 
+  if(!u) {
+    // Logged out: Home, Services, Log In, Book Now
+    links = `
+      <li><a href="#" onclick="navigateTo('home');return false" class="${p==='home'?'active':''}">Home</a></li>
+      <li><a href="#" onclick="scrollToServices();return false">Services</a></li>
+      <li><a href="#" onclick="navigateTo('auth');return false" id="nav-auth-link" class="${p==='auth'?'active':''}">Log In</a></li>
+      <li><a href="#" onclick="navigateTo('auth');return false" class="btn-nav">Book Now 💅</a></li>
+    `;
+  } else if(u.isOwner) {
+    // Owner nav
+    links = `
+      <li><a href="#" onclick="navigateTo('dashboard');return false" class="${p==='dashboard'?'active':''}">Dashboard 👑</a></li>
+      <li><span class="nav-user-chip">Hey Mimi 👑</span></li>
+      <li><button class="nav-btn-text" onclick="logOut()">Log Out</button></li>
+    `;
+  } else {
+    // Client nav
+    links = `
+      <li><a href="#" onclick="navigateTo('clientdash');return false" class="${p==='clientdash'?'active':''}">Home</a></li>
+      <li><a href="#" onclick="navigateTo('book');return false" class="${p==='book'?'active':''} btn-nav">Book Now 💅</a></li>
+      <li><a href="#" onclick="navigateTo('myappts');return false" class="${p==='myappts'?'active':''}">My Appointments</a></li>
+      <li><span class="nav-user-chip">Hi, ${u.name.split(' ')[0]} 👋</span></li>
+      <li><button class="nav-btn-text" onclick="logOut()">Log Out</button></li>
+    `;
+  }
+  document.getElementById('nav-links-list').innerHTML = links;
+}
+ 
+document.getElementById('hamburger').addEventListener('click', function() {
+  this.classList.toggle('open');
+  document.getElementById('nav-menu').classList.toggle('open');
+});
+ 
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+function toast(msg, type='default') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast '+type;
+  void t.offsetWidth; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+ 
+/* ═══════════════════════════════════════════════
+   AUTH
+═══════════════════════════════════════════════ */
+function renderAuth() {
+  document.getElementById('page-auth').innerHTML = `
+    <div class="auth-page">
+      <div class="auth-card">
+        <img src="${LOGO_SRC}" alt="Nails by Mimi">
+        <h2>Welcome Back</h2>
+        <p class="auth-sub">Log in or sign up to book your appointment</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Log In</button>
+          <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+        </div>
+        <div id="auth-body"></div>
+      </div>
+    </div>`;
+  showLoginForm();
+}
+function switchTab(t) {
+  document.getElementById('tab-login').classList.toggle('active',t==='login');
+  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
+  if(t==='login') showLoginForm(); else showSignupForm();
+}
+function showLoginForm() {
+  document.getElementById('auth-body').innerHTML = `
+    <form class="auth-form" onsubmit="doLogin(event)">
+      <div class="form-group"><label>Email</label><input type="email" id="li-email" placeholder="your@email.com" required></div>
+      <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••" required></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:.4rem">Log In</button>
+      <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:.9rem">Owner? Use your Mimi credentials 💅</p>
+    </form>`;
+}
+function showSignupForm() {
+  document.getElementById('auth-body').innerHTML = `
+    <form class="auth-form" onsubmit="doSignup(event)">
+      <div class="form-row">
+        <div class="form-group"><label>First Name</label><input type="text" id="su-first" placeholder="Sofia" required></div>
+        <div class="form-group"><label>Last Name</label><input type="text" id="su-last" placeholder="Rodriguez" required></div>
+      </div>
+      <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="sofia@email.com" required></div>
+      <div class="form-group"><label>Phone</label><input type="tel" id="su-phone" placeholder="(720) 555-0123"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="su-pass" placeholder="Create a password" required minlength="6"></div>
+      <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:.4rem">Create Account</button>
+    </form>`;
+}
+function doLogin(e) {
+  e.preventDefault();
+  const email=document.getElementById('li-email').value.trim().toLowerCase();
+  const pass=document.getElementById('li-pass').value;
+  if(email===OWNER_EMAIL&&pass===OWNER_PASS) {
+    S.user={name:'Mimi',email:OWNER_EMAIL,isOwner:true};
+    toast('Welcome back, Mimi! 👑','success'); navigateTo('dashboard'); return;
+  }
+  const u=S.users.find(u=>u.email===email&&u.password===pass);
+  if(u) { S.user={name:u.name,email:u.email,phone:u.phone,isOwner:false}; toast(`Welcome back, ${u.name.split(' ')[0]}! 💕`,'success'); navigateTo('clientdash'); return; }
+  toast('Invalid email or password','error');
+}
+function doSignup(e) {
+  e.preventDefault();
+  const first=document.getElementById('su-first').value.trim();
+  const last=document.getElementById('su-last').value.trim();
+  const email=document.getElementById('su-email').value.trim().toLowerCase();
+  const phone=document.getElementById('su-phone').value.trim();
+  const pass=document.getElementById('su-pass').value;
+  if(S.users.find(u=>u.email===email)){toast('Account already exists','error');return;}
+  const name=`${first} ${last}`;
+  S.users.push({name,email,phone,password:pass});
+  S.user={name,email,phone,isOwner:false};
+  save(); toast(`Account created! Welcome, ${first}! 🌸`,'success'); navigateTo('clientdash');
+}
+function logOut() { S.user=null; toast('Logged out. See you soon! 💕'); navigateTo('home'); }
+ 
+/* ═══════════════════════════════════════════════
+   HOME PAGE (logged-out)
+═══════════════════════════════════════════════ */
+function renderHome() {
+  const svcsHtml = SERVICES.map((s,i)=>`
+    <div class="service-card reveal" style="transition-delay:${i*.07}s">
+      <span class="service-icon">${s.icon}</span>
+      <h3>${s.name}</h3><p>${s.desc}</p>
+      <div class="service-duration">⏱ ${s.duration} min</div>
+      <div class="service-price">$${s.price}</div>
+    </div>`).join('');
+ 
+  const reviews = [
+    {init:'SR',name:'Sofia R.',   svc:'Gel Manicure',   text:'Mimi is AMAZING. My nails have never looked better. She is so detailed and sweet, I will not go anywhere else!'},
+    {init:'JT',name:'Jasmine T.', svc:'Pedicure',        text:'I came in for a pedicure and left feeling like a queen. The attention to detail is unmatched. 100% recommend!'},
+    {init:'ML',name:'Maria L.',   svc:'Acrylic Full Set',text:'Best nail experience I have ever had in Aurora. Clean, professional, and the results are absolutely stunning.'},
+    {init:'DK',name:'Destiny K.', svc:'Nail Art',        text:'The booking system is so easy and Mimi always texts back quickly. My nails are always fire when I leave!'},
+    {init:'PN',name:'Priya N.',   svc:'Mani + Pedi',     text:'Such a welcoming environment! Mimi made me feel so comfortable. My mani-pedi was absolute perfection.'},
+    {init:'LB',name:'Lauren B.',  svc:'Gel Manicure',    text:'I have been coming to Mimi for over a year and she never disappoints. Truly a gem in Aurora!'},
+  ];
+  const reviewsHtml = reviews.map((r,i)=>`
+    <div class="t-card reveal" style="transition-delay:${i*.07}s">
+      <div class="stars">★★★★★</div>
+      <p>"${r.text}"</p>
+      <div class="t-author">
+        <div class="t-avatar">${r.init}</div>
+        <div><div class="t-name">${r.name}</div><div class="t-svc">${r.svc}</div></div>
+      </div>
+    </div>`).join('');
+ 
+  document.getElementById('page-home').innerHTML = `
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+      <div class="hero-inner">
+        <div class="hero-text">
+          <div class="hero-eyebrow">✦ Licensed Nail Tech · Aurora, CO</div>
+          <h1 class="hero-title" style="margin-bottom:.9rem">Your Nails,<br><em>Perfectly Done.</em></h1>
+          <p class="hero-desc">Indulge in a luxury nail experience tailored just for you. Mimi brings her artistry and care to every single appointment — because you deserve nothing less than flawless.</p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="navigateTo('auth')">Book an Appointment 💅</button>
+            <button class="btn-outline" onclick="scrollToServices()">View Services</button>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat"><div class="num">500+</div><div class="lbl">Happy Clients</div></div>
+            <div class="hero-stat"><div class="num">5★</div><div class="lbl">Rated Service</div></div>
+            <div class="hero-stat"><div class="num">3+</div><div class="lbl">Yrs Experience</div></div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-img-wrap">
+            <div class="hero-circle-bg"></div>
+            <img class="hero-logo-big" src="${LOGO_SRC}" alt="Nails by Mimi">
+            <div class="hero-badge"><span>💅</span>By Appointment Only</div>
+            <div class="hero-badge2">✨ Aurora, Colorado</div>
+          </div>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- ABOUT -->
+    <section class="about-strip">
+      <div class="about-inner">
+        <img src="${LOGO_SRC}" alt="Mimi">
+        <div>
+          <div class="section-tag" style="background:rgba(255,255,255,.15);color:#fff">Meet Your Nail Artist</div>
+          <h2>Hey, I am Mimi! 👋</h2>
+          <div class="divider"></div>
+          <p>I am a licensed Nail Technician based in Aurora, Colorado with a passion for creating beautiful, long-lasting nail art. Every client gets my full attention and care. I believe your nails are an extension of your personality — and I am here to help them shine.</p>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- SERVICES -->
+    <section class="services-section section" id="services-section">
+      <div style="max-width:1100px;margin:0 auto">
+        <div class="text-center reveal">
+          <div class="section-tag">Services</div>
+          <h2 style="margin-bottom:.4rem">What We Offer</h2>
+          <div class="divider center"></div>
+          <p class="section-sub">From classic manicures to intricate nail art — every service is crafted with love.</p>
+        </div>
+        <div class="services-grid">${svcsHtml}</div>
+        <div style="text-align:center;margin-top:2.2rem">
+          <button class="btn-primary" onclick="navigateTo('auth')">Book Now 💅</button>
+        </div>
+      </div>
+    </section>
+ 
+    <!-- VIBE -->
+    <section class="vibe-section section">
+      <div class="text-center reveal">
+        <div class="section-tag">The Vibe</div>
+        <h2 style="margin-bottom:.4rem">Beauty is in the Details</h2>
+        <div class="divider center"></div>
+        <p class="section-sub">Nail looks for every mood, every season, every you.</p>
+      </div>
+      <div class="vibe-grid reveal">
+        <div class="vibe-card vibe-card-1"><span>💎</span><div class="vibe-label">Gel Sets</div></div>
+        <div class="vibe-card vibe-card-2"><span>🌸</span><div class="vibe-label">Soft Glam</div></div>
+        <div class="vibe-card vibe-card-3"><span>🎨</span><div class="vibe-label">Nail Art</div></div>
+        <div class="vibe-card vibe-card-4"><span>✨</span><div class="vibe-label">Chrome & Foil</div></div>
+        <div class="vibe-card vibe-card-5"><span>💅</span><div class="vibe-label">Acrylics</div></div>
+        <div class="vibe-card vibe-card-6"><span>🌷</span><div class="vibe-label">French Tips</div></div>
+      </div>
+    </section>
+ 
+    <!-- TESTIMONIALS -->
+    <section class="testimonials-section section">
+      <div style="max-width:1000px;margin:0 auto">
+        <div class="text-center reveal">
+          <div class="section-tag">Reviews</div>
+          <h2 style="margin-bottom:.4rem">Clients Love Mimi 💕</h2>
+          <div class="divider center"></div>
+        </div>
+        <div class="t-grid">${reviewsHtml}</div>
+      </div>
+    </section>
+ 
+    <!-- CTA -->
+    <section class="cta-section reveal">
+      <div class="section-tag" style="background:rgba(255,255,255,.15);color:#fff">Ready?</div>
+      <h2>Let us Make Your Nails <em style="color:var(--rose);font-style:italic">Perfect</em></h2>
+      <p>Book your appointment today. Spots fill up fast!</p>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+        <button class="btn-primary" onclick="navigateTo('auth')" style="font-size:1.02rem;padding:.95rem 2.4rem">Book Now 💅</button>
+      </div>
+    </section>
+ 
+    <!-- FOOTER -->
+    <footer class="footer">
+      <img src="${LOGO_SRC}" alt="Nails by Mimi">
+      <p style="margin-bottom:.35rem"><strong style="color:#fff">Nails by Mimi</strong></p>
+      <p>Aurora, Colorado · By Appointment Only</p>
+      <p style="margin-top:.65rem;font-size:.78rem">© ${new Date().getFullYear()} NailsByMimi · Made with 💕</p>
+    </footer>
+  `;
+  observeReveal();
+}
+ 
+function scrollToServices() {
+  if(S.page!=='home') { navigateTo('home'); setTimeout(()=>document.getElementById('services-section')?.scrollIntoView({behavior:'smooth'}),400); }
+  else document.getElementById('services-section')?.scrollIntoView({behavior:'smooth'});
+}
+ 
+/* ═══════════════════════════════════════════════
+   CLIENT DASHBOARD (logged-in landing)
+═══════════════════════════════════════════════ */
+function renderClientDash() {
+  const u = S.user;
+  const now = new Date();
+  const upcoming = S.appointments
+    .filter(a=>a.clientEmail===u.email && new Date(a.start)>=now && a.status!=='cancelled')
+    .sort((a,b)=>new Date(a.start)-new Date(b.start));
+  const nextAppt = upcoming[0] || null;
+ 
+  let nextApptHtml = '';
+  if(nextAppt) {
+    const svc = getSvc(nextAppt.serviceId);
+    const daysUntil = Math.ceil((new Date(nextAppt.start)-now)/(1000*60*60*24));
+    const daysLabel = daysUntil===0?'Today! 🎉':daysUntil===1?'Tomorrow 🌸':`In ${daysUntil} days`;
+    nextApptHtml = `
+      <div class="next-appt-card">
+        <div>
+          <div class="next-appt-label">Next Appointment</div>
+          <h3 style="margin-bottom:.1rem">${svc?.icon||'💅'} ${svc?.name||nextAppt.serviceId}</h3>
+          <span style="display:inline-block;background:var(--blush);color:var(--pink-600);font-size:.8rem;font-weight:700;padding:.2rem .75rem;border-radius:50px;margin-top:.3rem">${daysLabel}</span>
+        </div>
+        <div class="next-appt-row">
+          <div class="next-appt-detail">
+            <div class="nd-label">📅 Date</div>
+            <div class="nd-value">${fmtDateLong(nextAppt.start)}</div>
+          </div>
+          <div class="next-appt-detail">
+            <div class="nd-label">⏰ Time</div>
+            <div class="nd-value">${fmtTime(nextAppt.start)} – ${fmtTime(nextAppt.end)}</div>
+            <div class="nd-sub">${svc?.duration} min</div>
+          </div>
+          <div class="next-appt-detail">
+            <div class="nd-label">📍 Location</div>
+            <div class="nd-value">Nails by Mimi</div>
+            <div class="nd-sub">Aurora, Colorado</div>
+          </div>
+          <div class="next-appt-detail">
+            <div class="nd-label">💰 Price</div>
+            <div class="nd-value">$${svc?.price}</div>
+          </div>
+        </div>
+        ${nextAppt.notes?`<div style="background:var(--pink-50);border-radius:var(--radius-sm);padding:.75rem 1rem;font-size:.88rem;color:var(--text)">📝 <strong>Note:</strong> ${nextAppt.notes}</div>`:''}
+        <div style="display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="btn-primary btn-sm" onclick="navigateTo('myappts')">View All Appointments</button>
+          <button class="btn-outline btn-sm" onclick="navigateTo('book')">Book Another</button>
+        </div>
+      </div>`;
+  } else {
+    nextApptHtml = `
+      <div class="next-appt-card empty">
+        <div class="empty-icon">💅</div>
+        <h3>No upcoming appointments</h3>
+        <p style="color:var(--muted);margin-bottom:1.4rem;font-size:.92rem">You have not booked anything yet — treat yourself!</p>
+        <button class="btn-primary" onclick="navigateTo('book')">Book Your First Appointment 💅</button>
+      </div>`;
+  }
+ 
+  document.getElementById('page-clientdash').innerHTML = `
+    <div class="client-dash">
+      <div class="client-dash-hero">
+        <div>
+          <h1>Hey, ${u.name.split(' ')[0]}! 👋</h1>
+          <p>Welcome to your personal nail space. Looking gorgeous as always.</p>
+        </div>
+        <img src="${LOGO_SRC}" alt="Nails by Mimi">
+      </div>
+      <div class="client-dash-body">
+        ${nextApptHtml}
+        <div class="dash-quick-actions">
+          <div class="quick-action-card" onclick="navigateTo('book')">
+            <div class="qa-icon">💅</div>
+            <h3>Book Appointment</h3>
+            <p>Choose a service and pick your perfect time</p>
+          </div>
+          <div class="quick-action-card" onclick="navigateTo('myappts')">
+            <div class="qa-icon">📋</div>
+            <h3>My Appointments</h3>
+            <p>View upcoming and past appointment history</p>
+          </div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow)">
+          <h3 style="margin-bottom:1.2rem;font-size:1rem">✨ Our Services</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:.75rem">
+            ${SERVICES.map(s=>`
+              <div style="display:flex;align-items:center;gap:.65rem;padding:.7rem .9rem;background:var(--pink-50);border-radius:var(--radius-sm);cursor:pointer;transition:background .2s" onclick="navigateTo('book')" onmouseover="this.style.background='var(--pink-100)'" onmouseout="this.style.background='var(--pink-50)'">
+                <span style="font-size:1.4rem">${s.icon}</span>
+                <div><div style="font-weight:700;font-size:.88rem;color:var(--dark)">${s.name}</div><div style="font-size:.76rem;color:var(--muted)">${s.duration} min · $${s.price}</div></div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+ 
+/* ═══════════════════════════════════════════════
+   MY APPOINTMENTS
+═══════════════════════════════════════════════ */
+function renderMyAppts() {
+  const u = S.user;
+  const now = new Date();
+  const allMine = S.appointments.filter(a=>a.clientEmail===u.email);
+  const upcoming = allMine.filter(a=>new Date(a.start)>=now && a.status!=='cancelled').sort((a,b)=>new Date(a.start)-new Date(b.start));
+  const past = allMine.filter(a=>new Date(a.start)<now || a.status==='cancelled').sort((a,b)=>new Date(b.start)-new Date(a.start));
+ 
+  const buildCard = (a, isPast) => {
+    const svc = getSvc(a.serviceId);
+    const status = a.status==='cancelled'?'cancelled':isPast?'past':'confirmed';
+    const statusLabel = {confirmed:'Confirmed ✓',past:'Completed',cancelled:'Cancelled'}[status];
+    const statusCls   = {confirmed:'status-confirmed',past:'status-past',cancelled:'status-cancelled'}[status];
+    return `
+      <div class="appt-card">
+        <div class="appt-card-top">
+          <div class="appt-card-svc">
+            <span class="appt-card-icon">${svc?.icon||'💅'}</span>
+            <div>
+              <div class="appt-card-name">${svc?.name||a.serviceId}</div>
+              <div class="appt-card-price">$${svc?.price} · ${svc?.duration} min</div>
+            </div>
+          </div>
+          <span class="status-badge ${statusCls}">${statusLabel}</span>
+        </div>
+        <div class="appt-card-details">
+          <div class="appt-detail-chip">
+            <div class="chip-label">📅 Date</div>
+            <div class="chip-value">${fmtDateLong(a.start)}</div>
+          </div>
+          <div class="appt-detail-chip">
+            <div class="chip-label">⏰ Time</div>
+            <div class="chip-value">${fmtTime(a.start)} – ${fmtTime(a.end)}</div>
+          </div>
+          <div class="appt-detail-chip">
+            <div class="chip-label">📍 Where</div>
+            <div class="chip-value">Nails by Mimi, Aurora</div>
+          </div>
+        </div>
+        ${a.notes?`<div style="background:var(--pink-50);border-radius:var(--radius-sm);padding:.65rem .9rem;font-size:.85rem;color:var(--text)">📝 ${a.notes}</div>`:''}
+        <div class="appt-card-actions">
+          ${!isPast && a.status!=='cancelled' ? `<button class="btn-ghost danger" onclick="cancelMyAppt('${a.id}')">Cancel</button>` : ''}
+          ${isPast || a.status==='cancelled' ? `<button class="btn-ghost" onclick="navigateTo('book')">Book Again</button>` : ''}
+        </div>
+      </div>`;
+  };
+ 
+  const upcomingHtml = upcoming.length
+    ? upcoming.map(a=>buildCard(a,false)).join('')
+    : `<div class="empty-state"><span class="empty-icon-lg">🗓</span><h3>No upcoming appointments</h3><p>Book your next nail session below!</p><button class="btn-primary" onclick="navigateTo('book')">Book Now 💅</button></div>`;
+ 
+  const pastHtml = past.length
+    ? past.map(a=>buildCard(a,true)).join('')
+    : `<div class="empty-state" style="padding:1.5rem"><p style="color:var(--muted);font-size:.88rem">No past appointments yet.</p></div>`;
+ 
+  document.getElementById('page-myappts').innerHTML = `
+    <div class="my-appts-page">
+      <div class="my-appts-hero">
+        <div class="section-tag" style="background:rgba(255,255,255,.15);color:#fff">Your History</div>
+        <h1>My Appointments</h1>
+        <p>Track your upcoming sessions and past visits</p>
+      </div>
+      <div class="my-appts-body">
+        <div style="margin-bottom:1rem;display:flex;justify-content:flex-end">
+          <button class="btn-primary btn-sm" onclick="navigateTo('book')">+ New Appointment</button>
+        </div>
+        <div class="appts-section-header">
+          <h2>Upcoming</h2>
+          <span class="appt-count-badge">${upcoming.length}</span>
+        </div>
+        ${upcomingHtml}
+        <div class="appts-section-header" style="margin-top:2rem">
+          <h2>Past & Cancelled</h2>
+          <span class="appt-count-badge">${past.length}</span>
+        </div>
+        ${pastHtml}
+      </div>
+    </div>`;
+}
+ 
+function cancelMyAppt(id) {
+  if(!confirm('Cancel this appointment?')) return;
+  const a = S.appointments.find(a=>a.id===id);
+  if(a) a.status = 'cancelled';
+  save(); toast('Appointment cancelled','default'); renderMyAppts();
+}
+ 
+/* ═══════════════════════════════════════════════
+   BOOKING PAGE
+═══════════════════════════════════════════════ */
+let B = { svc:null, date:null, time:null, calMonth:new Date().getMonth(), calYear:new Date().getFullYear() };
+ 
+function renderBooking() {
+  document.getElementById('page-book').innerHTML = `
+    <div class="booking-page">
+      <div class="booking-hero">
+        <div class="section-tag" style="background:rgba(255,255,255,.2);color:#fff">Book Appointment</div>
+        <h1>Treat Yourself 💅</h1>
+        <p>Choose your service, pick a date and time, and you are all set!</p>
+      </div>
+      <div class="booking-layout">
+        <div style="display:grid;gap:1.4rem">
+          <div class="booking-card">
+            <h3>① Choose a Service</h3>
+            <div class="service-options" id="svc-opts"></div>
+          </div>
+          <div class="booking-card">
+            <h3>② Pick a Date</h3>
+            <div class="mini-cal-header">
+              <button class="cal-nav-btn" onclick="bookCalNav(-1)">‹</button>
+              <h4 id="cal-label"></h4>
+              <button class="cal-nav-btn" onclick="bookCalNav(1)">›</button>
+            </div>
+            <div class="mini-cal-grid" id="cal-grid"></div>
+          </div>
+          <div class="booking-card" id="time-card">
+            <h3>③ Pick a Time</h3>
+            <div id="time-note" style="color:var(--muted);font-size:.87rem">Select a service and date first.</div>
+            <div class="time-slots" id="time-slots" style="display:none"></div>
+          </div>
+        </div>
+        <div>
+          <div class="booking-card" id="summary-card" style="position:sticky;top:calc(var(--nav-h) + 1rem)">
+            <h3>Booking Summary</h3>
+            <div id="summary-body"><p style="color:var(--muted);font-size:.88rem">Choose a service, date, and time to continue.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-overlay" id="confirm-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('confirm-modal')">✕</button>
+        <h3 style="margin-bottom:1rem">Confirm Appointment</h3>
+        <div id="confirm-body"></div>
+        <div class="form-group" style="margin-top:1rem">
+          <label>Notes for Mimi (optional)</label>
+          <textarea id="book-notes" rows="3" placeholder="Allergies, preferences, inspiration..."></textarea>
+        </div>
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-top:1rem" onclick="confirmBooking()">Confirm & Book ✓</button>
+      </div>
+    </div>`;
+  renderSvcOpts(); renderBookCal();
+}
+ 
+function renderSvcOpts() {
+  const w=document.getElementById('svc-opts'); if(!w) return;
+  w.innerHTML=SERVICES.map(s=>`
+    <div class="service-option ${B.svc===s.id?'selected':''}" onclick="selectSvc('${s.id}')">
+      <span style="font-size:1.2rem">${s.icon}</span>
+      <div style="flex:1;min-width:0"><div class="svc-name">${s.name}</div><div class="svc-meta">⏱ ${s.duration} min · ${s.desc}</div></div>
+      <div class="svc-price">$${s.price}</div>
+    </div>`).join('');
+}
+ 
+function selectSvc(id){ B.svc=id; B.time=null; renderSvcOpts(); renderBookCal(); renderTimes(); renderSummary(); }
+ 
+function renderBookCal() {
+  const grid=document.getElementById('cal-grid'),label=document.getElementById('cal-label'); if(!grid) return;
+  const now=new Date(),y=B.calYear,m=B.calMonth;
+  const firstDay=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  label.textContent=`${months[m]} ${y}`;
+  let html=['Su','Mo','Tu','We','Th','Fr','Sa'].map(d=>`<div class="cal-day-label">${d}</div>`).join('');
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day empty"></div>`;
+  for(let day=1;day<=days;day++){
+    const date=new Date(y,m,day);
+    const isPast=date<new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    const dow=date.getDay(),sc=S.schedule[dow]||DEFAULT_SCHEDULE[dow];
+    const blocked=!sc.open,isToday=sameDay(date,now),isSel=B.date&&sameDay(date,B.date);
+    let cls='cal-day';
+    if(isPast) cls+=' past'; else if(blocked) cls+=' blocked';
+    if(isToday) cls+=' today'; if(isSel) cls+=' selected';
+    const dis=(isPast||blocked)?'disabled':`onclick="selectDate(${y},${m},${day})"`;
+    html+=`<button class="${cls}" ${dis}>${day}</button>`;
+  }
+  grid.innerHTML=html;
+}
+ 
+function bookCalNav(d){ B.calMonth+=d; if(B.calMonth>11){B.calMonth=0;B.calYear++;} if(B.calMonth<0){B.calMonth=11;B.calYear--;} renderBookCal(); }
+function selectDate(y,m,d){ B.date=new Date(y,m,d); B.time=null; renderBookCal(); renderTimes(); renderSummary(); }
+ 
+function renderTimes() {
+  const note=document.getElementById('time-note'),wrap=document.getElementById('time-slots'); if(!note||!wrap) return;
+  if(!B.svc||!B.date){ note.style.display='block'; note.textContent='Select a service and date first.'; wrap.style.display='none'; return; }
+  const dow=B.date.getDay(),sc=S.schedule[dow]||DEFAULT_SCHEDULE[dow];
+  if(!sc.open){ note.style.display='block'; note.textContent='Mimi is closed on this day.'; wrap.style.display='none'; return; }
+  const [oh,om]=sc.start.split(':').map(Number),[ch,cm]=sc.end.split(':').map(Number);
+  const slots=[]; let cur=oh*60+om;
+  while(cur+30<=ch*60+cm){ const hh=String(Math.floor(cur/60)).padStart(2,'0'),mm=String(cur%60).padStart(2,'0'); slots.push(`${hh}:${mm}`); cur+=30; }
+  note.style.display='none'; wrap.style.display='grid';
+  wrap.innerHTML=slots.map(s=>{
+    const avail=isAvailable(B.date,s,B.svc);
+    const [h,m]=s.split(':').map(Number),ap=h>=12?'PM':'AM',h12=h%12||12;
+    const label=`${h12}:${String(m).padStart(2,'0')} ${ap}`;
+    return `<div class="time-slot ${B.time===s?'selected':''} ${!avail?'booked':''}" ${avail?`onclick="selectTime('${s}')"`:''}>${label}</div>`;
+  }).join('');
+}
+ 
+function selectTime(t){ B.time=t; renderTimes(); renderSummary(); }
+ 
+function renderSummary() {
+  const body=document.getElementById('summary-body'); if(!body) return;
+  const svc=getSvc(B.svc);
+  if(!B.svc&&!B.date&&!B.time){ body.innerHTML=`<p style="color:var(--muted);font-size:.88rem">Choose a service, date, and time to continue.</p>`; return; }
+  const timeStr=B.time?(()=>{ const[h,m]=B.time.split(':').map(Number),ap=h>=12?'PM':'AM'; return `${h%12||12}:${String(m).padStart(2,'0')} ${ap}`; })():'—';
+  const endStr=svc&&B.time?(()=>{ const[h,m]=B.time.split(':').map(Number),em=h*60+m+svc.duration,eh=Math.floor(em/60),emm=em%60,ap=eh>=12?'PM':'AM'; return `${eh%12||12}:${String(emm).padStart(2,'0')} ${ap}`; })():'';
+  const ready=B.svc&&B.date&&B.time;
+  body.innerHTML=`
+    <div style="display:grid;gap:.8rem;margin-bottom:1.4rem">
+      <div style="display:flex;align-items:center;gap:10px;padding:.7rem;background:var(--pink-50);border-radius:var(--radius-sm)">
+        <span style="font-size:1.4rem">${svc?svc.icon:'❓'}</span>
+        <div><div style="font-weight:700;color:var(--dark)">${svc?svc.name:'No service selected'}</div>${svc?`<div style="font-size:.78rem;color:var(--muted)">${svc.duration} min · $${svc.price}</div>`:''}</div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.88rem;padding:0 .2rem">
+        <span style="color:var(--muted);font-weight:600">📅 Date</span>
+        <span style="font-weight:700;color:var(--dark)">${B.date?B.date.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}):'—'}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:.88rem;padding:0 .2rem">
+        <span style="color:var(--muted);font-weight:600">⏰ Time</span>
+        <span style="font-weight:700;color:var(--dark)">${timeStr}${endStr?' – '+endStr:''}</span>
+      </div>
+      ${svc?`<div style="display:flex;justify-content:space-between;font-size:.88rem;padding:.7rem .2rem 0;border-top:1px solid var(--border)"><span style="color:var(--muted);font-weight:600">💰 Total</span><span style="font-weight:800;font-size:1.05rem;color:var(--pink-600)">$${svc.price}</span></div>`:''}
+    </div>
+    ${ready?`<button class="btn-primary" style="width:100%;justify-content:center" onclick="openConfirm()">Review & Confirm ✓</button>`:`<p style="font-size:.8rem;color:var(--muted);text-align:center">Complete all selections to book.</p>`}`;
+}
+ 
+function openConfirm() {
+  if(!B.svc||!B.date||!B.time) return;
+  const svc=getSvc(B.svc);
+  const[h,m]=B.time.split(':').map(Number),ap=h>=12?'PM':'AM',h12=h%12||12;
+  const tl=`${h12}:${String(m).padStart(2,'0')} ${ap}`;
+  const em=h*60+m+svc.duration,eh=Math.floor(em/60),emm=em%60,eap=eh>=12?'PM':'AM';
+  const el=`${eh%12||12}:${String(emm).padStart(2,'0')} ${eap}`;
+  document.getElementById('confirm-body').innerHTML=`
+    <div style="background:var(--pink-50);border-radius:var(--radius-sm);padding:1rem;margin-bottom:.5rem;display:grid;gap:.5rem;font-size:.92rem">
+      <div><strong>Service:</strong> ${svc.icon} ${svc.name}</div>
+      <div><strong>Date:</strong> ${B.date.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</div>
+      <div><strong>Time:</strong> ${tl} – ${el}</div>
+      <div><strong>Client:</strong> ${S.user.name}</div>
+      <div style="border-top:1px solid var(--border);padding-top:.5rem;font-weight:800;color:var(--pink-600)">Total: $${svc.price}</div>
+    </div>`;
+  openModal('confirm-modal');
+}
+ 
+function confirmBooking() {
+  if(!B.svc||!B.date||!B.time) return;
+  const svc=getSvc(B.svc);
+  const[h,m]=B.time.split(':').map(Number);
+  const start=new Date(B.date); start.setHours(h,m,0,0);
+  const end=new Date(start.getTime()+svc.duration*60000);
+  S.appointments.push({id:genId(),clientName:S.user.name,clientEmail:S.user.email,
+    serviceId:B.svc,start:start.toISOString(),end:end.toISOString(),status:'confirmed',
+    notes:document.getElementById('book-notes')?.value||''});
+  save(); closeModal('confirm-modal');
+  B={svc:null,date:null,time:null,calMonth:new Date().getMonth(),calYear:new Date().getFullYear()};
+  toast('Appointment booked! See you soon 🎉','success');
+  navigateTo('myappts');
+}
+ 
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+ 
+/* ═══════════════════════════════════════════════
+   OWNER DASHBOARD
+═══════════════════════════════════════════════ */
+let dashWeekRef = new Date();
+const CAL_START=8, CAL_END=20, HOUR_H=60;
+ 
+function renderOwnerDash() {
+  if(!S.user?.isOwner) return;
+  const now=new Date();
+  const todayA=S.appointments.filter(a=>sameDay(a.start,now));
+  const wDates=getWeekDates(dashWeekRef);
+  const weekA=S.appointments.filter(a=>{ const d=new Date(a.start); return d>=wDates[0]&&d<=wDates[6]; });
+  const revenue=S.appointments.filter(a=>new Date(a.start)>=now).reduce((s,a)=>s+(getSvc(a.serviceId)?.price||0),0);
+ 
+  document.getElementById('page-dashboard').innerHTML=`
+    <div class="dashboard-page">
+      <div class="dash-header">
+        <div>
+          <div class="section-tag" style="background:rgba(255,255,255,.15);color:#fff;margin-bottom:.35rem">Owner Dashboard</div>
+          <h1>Hey Mimi! 👑</h1>
+          <p>${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</p>
+        </div>
+        <div style="display:flex;gap:.65rem;flex-wrap:wrap">
+          <button class="btn-primary" onclick="openBlockModal()">+ Block Time</button>
+          <button class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,.5)" onclick="openSchedModal()">⚙ Hours</button>
+        </div>
+      </div>
+      <div class="dash-body">
+        <div class="dash-stats">
+          <div class="dash-stat"><div class="ds-label">Today</div><div class="ds-value">${todayA.length}</div><div class="ds-sub">appointments</div></div>
+          <div class="dash-stat"><div class="ds-label">This Week</div><div class="ds-value">${weekA.length}</div><div class="ds-sub">appointments</div></div>
+          <div class="dash-stat"><div class="ds-label">Upcoming Revenue</div><div class="ds-value">$${revenue}</div><div class="ds-sub">estimated</div></div>
+          <div class="dash-stat"><div class="ds-label">Total Clients</div><div class="ds-value">${S.users.length+6}</div><div class="ds-sub">registered</div></div>
+        </div>
+        <div class="weekly-cal-wrap">
+          <div class="weekly-topbar">
+            <h3 id="week-label"></h3>
+            <div class="cal-top-actions">
+              <button class="week-nav-btn" onclick="wkNav(-1)">‹ Prev</button>
+              <button class="week-nav-btn" onclick="wkToday()">Today</button>
+              <button class="week-nav-btn" onclick="wkNav(1)">Next ›</button>
+            </div>
+          </div>
+          <div class="weekly-grid-outer">
+            <div class="weekly-grid">
+              <div class="weekly-grid-header" id="wg-hdr"></div>
+              <div class="weekly-grid-body" id="wg-body" style="display:grid;grid-template-columns:58px repeat(7,1fr)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="dash-panels">
+          <div class="dash-panel"><h3>📋 Upcoming Appointments</h3><div class="appt-list" id="dash-appt-list"></div></div>
+          <div class="dash-panel">
+            <h3>⚙️ Quick Actions</h3>
+            <div style="display:grid;gap:.65rem">
+              <button class="btn-primary" style="justify-content:center" onclick="openBlockModal()">🚫 Block Off Time</button>
+              <button class="btn-outline" style="justify-content:center" onclick="openSchedModal()">📅 Manage Weekly Hours</button>
+              <button class="btn-outline" style="justify-content:center" onclick="exportCSV()">📥 Export CSV</button>
+            </div>
+            <div style="margin-top:1.4rem"><h4 style="font-size:.88rem;margin-bottom:.7rem;color:var(--muted)">BLOCKED TIMES</h4><div id="blocked-list"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Block Modal -->
+    <div class="modal-overlay" id="block-modal">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal('block-modal')">✕</button>
+        <h3 style="margin-bottom:1rem">🚫 Block Off Time</h3>
+        <form onsubmit="doBlock(event)">
+          <div class="form-group"><label>Label</label><input type="text" id="blk-lbl" placeholder="e.g. Lunch break" required></div>
+          <div class="form-row">
+            <div class="form-group"><label>Start</label><input type="datetime-local" id="blk-start" required></div>
+            <div class="form-group"><label>End</label><input type="datetime-local" id="blk-end" required></div>
+          </div>
+          <div style="display:flex;gap:.65rem;margin-top:.5rem">
+            <button type="button" class="btn-outline" style="flex:1;justify-content:center" onclick="closeModal('block-modal')">Cancel</button>
+            <button type="submit" class="btn-primary" style="flex:1;justify-content:center">Block ✓</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <!-- Schedule Modal -->
+    <div class="modal-overlay" id="sched-modal">
+      <div class="modal" style="max-width:560px">
+        <button class="modal-close" onclick="closeModal('sched-modal')">✕</button>
+        <h3 style="margin-bottom:.4rem">📅 Weekly Hours</h3>
+        <p style="font-size:.86rem;color:var(--muted);margin-bottom:1.4rem">Toggle days and set your open/close times. Updates instantly.</p>
+        <div class="schedule-grid" id="sched-grid"></div>
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-top:1.4rem" onclick="saveSched()">Save Hours ✓</button>
+      </div>
+    </div>
+    <!-- Appt Detail Modal -->
+    <div class="modal-overlay" id="appt-detail-modal">
+      <div class="modal"><button class="modal-close" onclick="closeModal('appt-detail-modal')">✕</button><div id="appt-detail-body"></div></div>
+    </div>`;
+ 
+  renderWeeklyCal(); renderDashApptList(); renderBlockedList(); setBlockDefaults();
+}
+ 
+function renderWeeklyCal(){
+  const hdr=document.getElementById('wg-hdr'),body=document.getElementById('wg-body'),lbl=document.getElementById('week-label');
+  if(!hdr||!body) return;
+  const dates=getWeekDates(dashWeekRef),today=new Date();
+  const dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const opts={month:'short',day:'numeric'};
+  lbl.textContent=`${dates[0].toLocaleDateString('en-US',opts)} – ${dates[6].toLocaleDateString('en-US',opts)}, ${dates[0].getFullYear()}`;
+  hdr.innerHTML=`<div class="wg-corner"></div>`+dates.map((d,i)=>{
+    const isT=sameDay(d,today);
+    return `<div class="wg-day-head ${isT?'today':''}"><div class="day-name">${dayNames[i]}</div><div class="day-num">${d.getDate()}</div></div>`;
+  }).join('');
+  const hours=[];
+  for(let h=CAL_START;h<=CAL_END;h++) hours.push(h===12?'12 PM':h>12?`${h-12} PM`:`${h} AM`);
+  const totalH=(CAL_END-CAL_START+1)*HOUR_H;
+  let timeCells=hours.map(h=>`<div class="wg-time-cell">${h}</div>`).join('');
+  body.innerHTML=`<div>${timeCells}</div>`+dates.map(d=>{
+    const isT=sameDay(d,today);
+    const dow=d.getDay(),sc=S.schedule[dow]||DEFAULT_SCHEDULE[dow];
+    const lines=hours.map(()=>`<div class="wg-hour-line"></div>`).join('');
+    const apptBlocks=S.appointments.filter(a=>sameDay(a.start,d)).map(a=>{
+      const svc=getSvc(a.serviceId),start=new Date(a.start),end=new Date(a.end);
+      const top=((start.getHours()+start.getMinutes()/60)-CAL_START)*HOUR_H;
+      const height=((end-start)/3600000)*HOUR_H;
+      if(top<0) return '';
+      return `<div class="appt-block ${svc?.color||'appt-manicure'}" style="top:${top}px;height:${Math.max(height-2,20)}px" onclick="showApptDetail('${a.id}')" title="${a.clientName}">
+        <div class="ab-name">${a.clientName}</div>
+        <div class="ab-svc">${svc?.name||a.serviceId}</div>
+        <div class="ab-time">${fmtTime(a.start)}</div>
+      </div>`;
+    }).join('');
+    const blkBlocks=S.blockedTimes.filter(b=>sameDay(b.start,d)).map(b=>{
+      const bs=new Date(b.start),be=new Date(b.end);
+      const top=((bs.getHours()+bs.getMinutes()/60)-CAL_START)*HOUR_H;
+      const height=((be-bs)/3600000)*HOUR_H;
+      if(top<0) return '';
+      return `<div class="blocked-block" style="top:${top}px;height:${Math.max(height,20)}px"><div class="blocked-label">${b.label}</div></div>`;
+    }).join('');
+    const closedOverlay=!sc.open?`<div style="position:absolute;inset:0;background:rgba(245,245,245,.7);display:flex;align-items:center;justify-content:center;z-index:3"><span style="font-size:.68rem;font-weight:700;color:#bbb;writing-mode:vertical-lr;transform:rotate(180deg);letter-spacing:.07em">CLOSED</span></div>`:'';
+    return `<div class="wg-day-col ${isT?'today-col':''}" style="position:relative;height:${totalH}px">${lines}${closedOverlay}${blkBlocks}${apptBlocks}</div>`;
+  }).join('');
+}
+ 
+function wkNav(d){ dashWeekRef.setDate(dashWeekRef.getDate()+d*7); renderWeeklyCal(); const l=document.getElementById('week-label'); if(l) renderWeeklyCal(); }
+function wkToday(){ dashWeekRef=new Date(); renderWeeklyCal(); }
+ 
+function renderDashApptList(){
+  const w=document.getElementById('dash-appt-list'); if(!w) return;
+  const now=new Date();
+  const list=S.appointments.filter(a=>new Date(a.start)>=now).sort((a,b)=>new Date(a.start)-new Date(b.start)).slice(0,8);
+  const dotClr={manicure:'#f48fb1',pedicure:'#9fa8da',gel:'#ce93d8',acrylic:'#ffb74d','nail-art':'#80cbc4',wax:'#ce93d8','gel-pedi':'#9fa8da','acrylic-fill':'#ffb74d','mani-pedi':'#f48fb1'};
+  w.innerHTML=list.length?list.map(a=>`
+    <div class="appt-item" onclick="showApptDetail('${a.id}')">
+      <div class="appt-dot" style="background:${dotClr[a.serviceId]||'#f48fb1'}"></div>
+      <div class="appt-item-info"><div class="appt-item-name">${a.clientName}</div><div class="appt-item-meta">${getSvc(a.serviceId)?.name||a.serviceId} · ${fmtDate(a.start)}</div></div>
+      <div class="appt-item-time">${fmtTime(a.start)}</div>
+    </div>`).join(''):`<p style="color:var(--muted);font-size:.88rem">No upcoming appointments.</p>`;
+}
+ 
+function renderBlockedList(){
+  const w=document.getElementById('blocked-list'); if(!w) return;
+  const now=new Date(),future=S.blockedTimes.filter(b=>new Date(b.end)>=now);
+  w.innerHTML=future.length?future.map(b=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.45rem 0;border-bottom:1px solid var(--pink-50);gap:.5rem">
+      <div style="min-width:0"><div style="font-weight:700;font-size:.83rem;color:var(--dark)">${b.label}</div><div style="font-size:.73rem;color:var(--muted)">${fmtDate(b.start)} ${fmtTime(b.start)} – ${fmtTime(b.end)}</div></div>
+      <button onclick="removeBlock('${b.id}')" style="background:none;border:none;color:#e57373;cursor:pointer;font-size:.95rem;flex-shrink:0">✕</button>
+    </div>`).join(''):`<p style="color:var(--muted);font-size:.8rem">No blocked times.</p>`;
+}
+ 
+function setBlockDefaults(){
+  const now=new Date(),pad=n=>String(n).padStart(2,'0');
+  const fmt=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const s=document.getElementById('blk-start'),e=document.getElementById('blk-end');
+  if(s) s.value=fmt(now);
+  if(e){ const later=new Date(now.getTime()+3600000); e.value=fmt(later); }
+}
+ 
+function openBlockModal(){ openModal('block-modal'); setBlockDefaults(); }
+ 
+function doBlock(e){
+  e.preventDefault();
+  const lbl=document.getElementById('blk-lbl').value.trim();
+  const start=document.getElementById('blk-start').value;
+  const end=document.getElementById('blk-end').value;
+  if(new Date(end)<=new Date(start)){ toast('End must be after start','error'); return; }
+  S.blockedTimes.push({id:genId(),label:lbl,start:new Date(start).toISOString(),end:new Date(end).toISOString()});
+  save(); closeModal('block-modal'); toast('Time blocked 🚫','success'); renderWeeklyCal(); renderBlockedList();
+}
+ 
+function removeBlock(id){ S.blockedTimes=S.blockedTimes.filter(b=>b.id!==id); save(); renderWeeklyCal(); renderBlockedList(); toast('Block removed'); }
+ 
+function openSchedModal(){
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  document.getElementById('sched-grid').innerHTML=days.map((name,i)=>{
+    const sc=S.schedule[i]||DEFAULT_SCHEDULE[i];
+    return `<div class="schedule-row">
+      <span class="day-name">${name}</span>
+      <div style="display:flex;gap:.45rem;align-items:center;flex:1;justify-content:center;flex-wrap:wrap">
+        <input type="time" id="sc-s-${i}" value="${sc.start}" style="width:100px;padding:.3rem .5rem;border:1.5px solid var(--border);border-radius:7px;font-family:'Nunito',sans-serif;font-size:.8rem;background:var(--pink-50)">
+        <span style="color:var(--muted);font-size:.78rem">to</span>
+        <input type="time" id="sc-e-${i}" value="${sc.end}" style="width:100px;padding:.3rem .5rem;border:1.5px solid var(--border);border-radius:7px;font-family:'Nunito',sans-serif;font-size:.8rem;background:var(--pink-50)">
+      </div>
+      <label class="toggle"><input type="checkbox" id="sc-o-${i}" ${sc.open?'checked':''}><span class="toggle-slider"></span></label>
+    </div>`;
+  }).join('');
+  openModal('sched-modal');
+}
+ 
+function saveSched(){
+  for(let i=0;i<7;i++) S.schedule[i]={open:document.getElementById(`sc-o-${i}`)?.checked||false,start:document.getElementById(`sc-s-${i}`)?.value||'09:00',end:document.getElementById(`sc-e-${i}`)?.value||'18:00'};
+  save(); closeModal('sched-modal'); toast('Schedule updated! 🗓','success'); renderWeeklyCal();
+}
+ 
+function showApptDetail(id){
+  const a=S.appointments.find(a=>a.id===id); if(!a) return;
+  const svc=getSvc(a.serviceId);
+  document.getElementById('appt-detail-body').innerHTML=`
+    <h3 style="margin-bottom:1.1rem">${svc?.icon||'💅'} Appointment Details</h3>
+    <div style="display:grid;gap:.65rem;background:var(--pink-50);border-radius:var(--radius-sm);padding:1rem;margin-bottom:1.1rem;font-size:.9rem">
+      <div><strong>Client:</strong> ${a.clientName}</div>
+      <div><strong>Email:</strong> ${a.clientEmail}</div>
+      <div><strong>Service:</strong> ${svc?.name||a.serviceId}</div>
+      <div><strong>Date:</strong> ${fmtDateLong(a.start)}</div>
+      <div><strong>Time:</strong> ${fmtTime(a.start)} – ${fmtTime(a.end)}</div>
+      <div><strong>Duration:</strong> ${svc?.duration} min</div>
+      <div><strong>Price:</strong> $${svc?.price}</div>
+      ${a.notes?`<div><strong>Notes:</strong> ${a.notes}</div>`:''}
+    </div>
+    <div style="display:flex;gap:.65rem">
+      <button class="btn-outline" style="flex:1;justify-content:center" onclick="closeModal('appt-detail-modal')">Close</button>
+      <button class="btn-primary" style="flex:1;justify-content:center;background:linear-gradient(135deg,#e57373,#c62828)" onclick="ownerCancelAppt('${id}')">Cancel Appt</button>
+    </div>`;
+  openModal('appt-detail-modal');
+}
+ 
+function ownerCancelAppt(id){
+  if(!confirm('Cancel this appointment?')) return;
+  S.appointments=S.appointments.filter(a=>a.id!==id);
+  save(); closeModal('appt-detail-modal'); toast('Appointment cancelled'); renderOwnerDash();
+}
+ 
+function exportCSV(){
+  const rows=['Client,Email,Service,Date,Start,End,Price,Notes'];
+  S.appointments.forEach(a=>{ const svc=getSvc(a.serviceId); rows.push([a.clientName,a.clientEmail,svc?.name||a.serviceId,fmtDate(a.start),fmtTime(a.start),fmtTime(a.end),svc?.price||'',`"${(a.notes||'').replace(/"/g,'""')}"`].join(',')); });
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const url=URL.createObjectURL(blob),el=document.createElement('a');
+  el.href=url; el.download='nailsbymimi-appointments.csv'; el.click(); URL.revokeObjectURL(url);
+  toast('Exported! 📥','success');
+}
+ 
+/* ─── Scroll reveal ─── */
+function observeReveal(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }),{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+ 
+/* ─── INIT ─── */
+load(); seedDemo();
+document.getElementById('nav-logo-img').src = LOGO_SRC;
+navigateTo('home');
+</script>
+</body>
+</html>
